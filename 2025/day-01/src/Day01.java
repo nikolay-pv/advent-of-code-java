@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class Day01 {
-    public static Integer solveFirst(ArrayList<String> inputList) {
-        Integer pos = 50;
-        Integer counter = 0;
+    public static int solveFirst(ArrayList<String> inputList) {
+        int pos = 50;
+        int counter = 0;
         for (String line : inputList) {
-            Integer sign = line.charAt(0) == 'L' ? -1 : 1;
-            Integer clicks = Integer.parseInt(line, 1, line.length(), 10);
+            int sign = line.charAt(0) == 'L' ? -1 : 1;
+            int clicks = Integer.parseInt(line, 1, line.length(), 10);
             pos = (pos + sign * clicks) % 100;
             if (pos < 0) {
                 pos += 100;
@@ -24,12 +24,12 @@ public class Day01 {
     }
 
     public static int solveSecond(ArrayList<String> inputList) {
-        Integer pos = 50;
-        Integer counter = 0;
+        int pos = 50;
+        int counter = 0;
         for (String line : inputList) {
-            Integer sign = line.charAt(0) == 'L' ? -1 : 1;
-            Integer clicks = Integer.parseInt(line, 1, line.length(), 10);
-            Integer new_pos = pos + sign * (clicks % 100);
+            int sign = line.charAt(0) == 'L' ? -1 : 1;
+            int clicks = Integer.parseInt(line, 1, line.length(), 10);
+            int new_pos = pos + sign * (clicks % 100);
             counter += clicks / 100;
             counter += Math.abs(new_pos) / 100;
             if (new_pos <= 0 && pos != 0) {
