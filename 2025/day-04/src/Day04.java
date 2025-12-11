@@ -6,13 +6,27 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class Day04 {
+    private static Indices countNeighbors(RollsMap map) {
+        int width = map.getWidth();
+        int height = map.getHeight();
+        Indices removableRolls = new Indices();
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if (map.getAt(row, col, '.') == '@' && map.countNeighbors(row, col, '@', '.') < 4) {
+                    removableRolls.add(row, col);
+                }
+            }
+        }
+        return removableRolls;
+    }
+
     public static int solveFirst(RollsMap map) {
         int width = map.getWidth();
         int height = map.getHeight();
         int count = 0;
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if (map.getAt(i, j, '.') == '@' && map.countNeighbors(i, j, '@', '.') < 4) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if (map.getAt(row, col, '.') == '@' && map.countNeighbors(row, col, '@', '.') < 4) {
                     count += 1;
                 }
             }
@@ -21,7 +35,14 @@ public class Day04 {
     }
 
     public static int solveSecond(RollsMap map) {
-        return 0;
+        int count = 0;
+        var indices = countNeighbors(map);
+        while (indices.size() != 0) {
+            count += indices.size();
+            map.removeAllAt(indices);
+            indices = countNeighbors(map);
+        }
+        return count;
     }
 
     public static void main(String[] args) {
