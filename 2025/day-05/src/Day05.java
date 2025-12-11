@@ -15,7 +15,7 @@ public class Day05 {
                 res.add(r);
                 continue;
             }
-            if (res.getLast().getLast() > r.getFirst()) {
+            if (res.getLast().getLast() >= r.getFirst()) {
                 res.getLast().merge(r);
             } else {
                 res.add(r);
@@ -66,7 +66,19 @@ public class Day05 {
     }
 
     public static long solveSecond(ArrayList<String> inputList) {
-        return 0;
+        ArrayList<Range> freshRanges = new ArrayList<>();
+        for (var line : inputList) {
+            if (line.isEmpty()) {
+                break;
+            }
+            freshRanges.add(Range.parseRange(line));
+        }
+        freshRanges = deduplicate(freshRanges);
+        long count = 0L;
+        for (Range range : freshRanges) {
+            count += range.size();
+        }
+        return count;
     }
 
     public static void main(String[] args) {

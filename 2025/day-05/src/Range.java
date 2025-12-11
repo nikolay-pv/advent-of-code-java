@@ -19,6 +19,10 @@ public class Range implements Comparable<Range> {
         return place(val) == 0;
     }
 
+    public long size() {
+        return last - first + 1L;
+    }
+
     public long place(long val) {
         if (val < first) {
             return -1;
