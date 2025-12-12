@@ -36,7 +36,29 @@ public class Day08 {
     }
 
     public static long solveSecond(ArrayList<String> inputList) {
-        return 0;
+        ArrayList<Point> points = new ArrayList<>();
+        inputList.stream().map(s -> Point.parsePoint(s)).forEach(points::add);
+        AnnotatedDistance[] distances = new AnnotatedDistance[(points.size() - 1) * (points.size()) / 2];
+        int idx = 0;
+        for (int i = 0; i < points.size() - 1; i++) {
+            var start = points.get(i);
+            for (int j = i + 1; j < points.size(); j++) {
+                distances[idx] = new AnnotatedDistance(i, j, start.sqrDistanceTo(points.get(j)));
+                idx++;
+            }
+        }
+        Arrays.sort(distances);
+
+        AnnotatedDistance finalConnection = null;
+        var set = new DisjointSet(points.size());
+        for (var connection : distances) {
+            set.unite(connection.i, connection.j);
+            if (set.getDisjointSetsCount() == 1) {
+                finalConnection = connection;
+                break;
+            }
+        }
+        return (long) points.get(finalConnection.i).x * points.get(finalConnection.j).x;
     }
 
     public static void main(String[] args) {

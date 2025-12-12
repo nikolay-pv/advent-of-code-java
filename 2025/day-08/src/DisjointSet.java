@@ -4,14 +4,20 @@ import java.util.Collections;
 public class DisjointSet {
     private int[] parents;
     private long[] sizes;
+    private int counter;
 
     public DisjointSet(int n) {
         this.parents = new int[n];
         this.sizes = new long[n];
+        this.counter = n;
         for (int i = 0; i < n; i++) {
             this.sizes[i] = 1;
             this.parents[i] = i;
         }
+    }
+
+    public int getDisjointSetsCount() {
+        return this.counter;
     }
 
     public int find(int x) {
@@ -40,6 +46,7 @@ public class DisjointSet {
 
         this.parents[y] = x;
         this.sizes[x] = this.sizes[x] + this.sizes[y];
+        this.counter--;
         return true;
     }
 
