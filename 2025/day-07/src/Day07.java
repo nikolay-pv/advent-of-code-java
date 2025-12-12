@@ -35,14 +35,47 @@ public class Day07 {
                         break;
                 }
             }
-            occupied = newOccupied;
-            newOccupied = def;
+            occupied = newOccupied.clone();
+            newOccupied = def.clone();
         }
         return counter;
     }
 
-    public static int solveSecond(ArrayList<String> inputList) {
-        return 0;
+    public static long solveSecond(ArrayList<String> inputList) {
+        final int size = inputList.getFirst().length();
+        // padding to not handle the bound checking down the road
+        final long[] def = new long[size + 2];
+        long[] occupied = new long[size + 2];
+        long[] newOccupied = new long[size + 2];
+        for (var line : inputList) {
+            for (int i = 1; i < size + 1; i++) {
+                // shift back one from padded data to line idx
+                switch (line.charAt(i - 1)) {
+                    case 'S':
+                        newOccupied[i] = 1;
+                        break;
+                    case '^':
+                        if (occupied[i] > 0) {
+                            newOccupied[i - 1] += occupied[i];
+                            newOccupied[i] = 0;
+                            newOccupied[i + 1] += occupied[i];
+                        }
+                        break;
+                    case '.':
+                        newOccupied[i] += occupied[i];
+                        break;
+                    default:
+                        break;
+                }
+            }
+            occupied = newOccupied.clone();
+            newOccupied = def.clone();
+        }
+        long counter = 0;
+        for (int i = 1; i < size + 1; i++) {
+            counter += occupied[i];
+        }
+        return counter;
     }
 
     public static void main(String[] args) {
