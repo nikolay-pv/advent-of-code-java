@@ -1,6 +1,6 @@
 # Advent of Code: solutions in Java
 
-This repository contains my solutions for [advent of code challenges](https://adventofcode.com). It is also my first ever experience with Java language.
+This repository contains my solutions for [advent of code challenges](https://adventofcode.com).
 
 If you are interested in a different year or language, check my other repositories:
 
