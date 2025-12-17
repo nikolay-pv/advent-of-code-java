@@ -21,8 +21,85 @@ public class Day09 {
         return maxRectArea;
     }
 
+    private static boolean isInsidePolygon(ArrayList<Edge> polygon, ArrayList<Edge> rect) {
+        for (var polygonEdge : polygon) {
+            for (var rectEdge : rect) {
+                // co-directional
+                // not allowed to be in opposite directions (if have overlap)
+                if (polygonEdge.isHorizontal() == rectEdge.isHorizontal()) {
+                    if (polygonEdge.containsWeakly(rectEdge.start) || polygonEdge.containsWeakly(rectEdge.end)) {
+                        if (polygonEdge.normal.compareTo(rectEdge.normal) != 0) {
+                            return false;
+                        }
+                    }
+                }
+                // orthogonal
+                // no polygon edge is allowed to intersect
+                var intersection = rectEdge.getIntersectionPoint(polygonEdge);
+                if (intersection != null) {
+                    if (polygonEdge.isHorizontal() == rectEdge.isHorizontal()) {
+                        continue;
+                    }
+                    // touching case
+                    if (polygonEdge.end.compareTo(intersection) == 0) {
+                        // rule out the corner
+                        if (rectEdge.start.compareTo(intersection) == 0) {
+                            continue;
+                        }
+                        // polygon edge coming from within the rect = intersects
+                        if (rectEdge.normal.dot(polygonEdge.direction) < 0) {
+                            return false;
+                        }
+                        continue;
+                    }
+                    if (polygonEdge.start.compareTo(intersection) == 0) {
+                        // rule out the corner
+                        if (rectEdge.end.compareTo(intersection) == 0) {
+                            continue;
+                        }
+                        // polygon edge going inside the rect = intersects
+                        if (rectEdge.normal.dot(polygonEdge.direction) > 0) {
+                            return false;
+                        }
+                        continue;
+                    }
+                    if (rectEdge.end.compareTo(intersection) == 0 || rectEdge.start.compareTo(intersection) == 0) {
+                        continue;
+                    }
+                    // all other intersections are bad
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public static long solveSecond(ArrayList<Point2D> inputList) {
-        return 0;
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (int i = 1; i < inputList.size(); i++) {
+            var start = inputList.get(i - 1);
+            var end = inputList.get(i);
+            edges.add(new Edge(start, end));
+        }
+        // closing the polygon by adding last edge
+        edges.add(new Edge(inputList.getLast(), inputList.getFirst()));
+
+        long maxRectArea = 0;
+        for (int i = 0; i < inputList.size() - 1; i++) {
+            var start = inputList.get(i);
+            for (int j = i + 1; j < inputList.size(); j++) {
+                var end = inputList.get(j);
+                var rect = Edge.createRectFromDiagonal(start, end);
+                if (rect == null) { // line like rectangle is ignored (for now)
+                    continue;
+                }
+                if (!isInsidePolygon(edges, rect)) {
+                    continue;
+                }
+                maxRectArea = Math.max(maxRectArea, getRectArea(start, end));
+            }
+        }
+        return maxRectArea;
     }
 
     public static void main(String[] args) {
