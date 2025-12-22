@@ -3,34 +3,28 @@ import java.util.ArrayList;
 public class DeviceNode {
     private String name;
     private ArrayList<DeviceNode> outlets;
+    private ArrayList<DeviceNode> inlets;
 
-    String getName() {
+    public String getName() {
         return this.name;
     }
 
-    ArrayList<DeviceNode> getOutlets() {
+    public ArrayList<DeviceNode> getOutlets() {
         return this.outlets;
     }
 
-    DeviceNode(String name, ArrayList<DeviceNode> outlets) {
-        this.name = name;
-        this.outlets = outlets;
+    public ArrayList<DeviceNode> getInlets() {
+        return this.inlets;
     }
 
-    DeviceNode(String name) {
+    public DeviceNode(String name) {
         this.name = name;
         this.outlets = new ArrayList<>();
+        this.inlets = new ArrayList<>();
     }
 
     void addOutlet(DeviceNode node) {
         this.outlets.add(node);
-    }
-
-    boolean isFirst() {
-        return this.name.contentEquals("you");
-    }
-
-    boolean isLast() {
-        return this.name.contentEquals("out");
+        node.inlets.add(this);
     }
 }

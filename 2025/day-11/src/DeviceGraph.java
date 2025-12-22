@@ -3,27 +3,21 @@ import java.util.HashMap;
 
 public class DeviceGraph {
     private HashMap<String, DeviceNode> nodes;
-    private DeviceNode first;
-    private DeviceNode last;
 
     public HashMap<String, DeviceNode> getNodes() {
         return this.nodes;
     }
 
-    public HashMap<String, Integer> getVisitingMap() {
-        var hm = new HashMap<String, Integer>();
+    public HashMap<String, Long> getVisitingMap(Long withValue) {
+        var hm = new HashMap<String, Long>();
         for (var k : this.nodes.keySet()) {
-            hm.put(k, 0);
+            hm.put(k, withValue);
         }
         return hm;
     }
 
-    public DeviceNode getFirst() {
-        return this.first;
-    }
-
-    public DeviceNode getLast() {
-        return this.last;
+    public DeviceNode getNamed(String name) {
+        return this.nodes.get(name);
     }
 
     private DeviceNode getOrCreate(String name) {
@@ -32,18 +26,11 @@ public class DeviceGraph {
             n = new DeviceNode(name);
             this.nodes.put(name, n);
         }
-        if (n.isFirst()) {
-            this.first = n;
-        } else if (n.isLast()) {
-            this.last = n;
-        }
         return n;
     }
 
     public DeviceGraph() {
         this.nodes = new HashMap<>();
-        this.first = null;
-        this.last = null;
     }
 
     public static DeviceGraph readDeviceGraph(ArrayList<String> inputList) {

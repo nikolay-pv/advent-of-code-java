@@ -3,35 +3,49 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.stream.Stream;
 
 public class Day11 {
-    private static long dfs(HashMap<String, Integer> visiting, DeviceNode target, DeviceNode node) {
-        if (node == target) {
-            return 1;
-        }
-        var state = visiting.get(node.getName());
-        if (state > 0) {
-            return 0;
-        }
-        visiting.put(node.getName(), state + 1); // visiting
-        long pathsCount = 0L;
-        for (var child : node.getOutlets()) {
-            pathsCount += dfs(visiting, target, child);
-        }
-        visiting.put(node.getName(), state); // mark back with original state
-        return pathsCount;
-    }
 
     public static long solveFirst(ArrayList<String> inputList) {
         var graph = DeviceGraph.readDeviceGraph(inputList);
-        var visiting = graph.getVisitingMap();
-        return dfs(visiting, graph.getLast(), graph.getFirst());
+        var algorithm = new GraphAlgo(graph);
+        return algorithm.countPaths(graph.getNamed("you"), graph.getNamed("out"), null);
     }
 
     public static long solveSecond(ArrayList<String> inputList) {
-        return 0;
+        var graph = DeviceGraph.readDeviceGraph(inputList);
+        var firstNode = graph.getNamed("svr");
+        var midNode1 = graph.getNamed("dac");
+        var midNode2 = graph.getNamed("fft");
+        var lastNode = graph.getNamed("out");
+
+        var graphAlgo = new GraphAlgo(graph);
+        // sort out order
+        var tmp = graphAlgo.closest(firstNode, midNode1, midNode2);
+        if (tmp != midNode1) {
+            // swap
+            midNode2 = midNode1;
+            midNode1 = tmp;
+        }
+        long pathsCount = graphAlgo.countReturnPaths(firstNode, midNode1, null);
+        pathsCount *= graphAlgo.countPaths(midNode2, lastNode, null);
+
+        final long midFlag1 = 0b1L;
+        final long midFlag2 = 0b10L;
+        final long allFlags = midFlag1 | midFlag2;
+        var reachabilityState = graph.getVisitingMap(0L);
+        graphAlgo.markReachable(midNode1, midFlag1, reachabilityState);
+        graphAlgo.markReturnReachable(midNode2, midFlag2, reachabilityState);
+        var filter = new HashSet<String>();
+        for (String key : reachabilityState.keySet()) {
+            if (reachabilityState.get(key).longValue() == allFlags) {
+                filter.add(key);
+            }
+        }
+        pathsCount *= graphAlgo.countPaths(midNode1, midNode2, filter);
+        return pathsCount;
     }
 
     public static void main(String[] args) {
