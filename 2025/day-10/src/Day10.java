@@ -20,6 +20,8 @@ public class Day10 {
     }
 
     public static long solveSecond(ArrayList<String> inputList) {
+        // this is solved with python's linear solver because I couldn't find a faster
+        // way to search the solution space without writing a LP solver
         return 0;
     }
 
